@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- 定义日志文件的存储地址 -->
+	<property name="LOG_HOME" value="G:/logs" />
+	<!--定义日志文件的备份文件地址 -->
+	<property name="LOG_BACK_HOME"
+		value="G:/logs/backup" />
+	<!-- 日志输出级别 TRACE, DEBUG, INFO, WARN, ERROR, ALL OFF -->
+	<property name="LOG_LEVEL" value="DEBUG" />
+	<!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+	<property name="LOG_PATTERN"
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n" />
+	<!-- 历史log文件最多保留天数 -->
+	<property name="LOG_FILE_MAXHISTORY" value="7" />
+
+	<!-- 日志消息体中包含的字符 -->
+	<property name="LOG_MAPPING_CONSOLE" value="[NEU-ECOMMERCE-CONSOLE-LOG]" />
+	<property name="LOG_MAPPING_SYSTEM" value="[NEU-ECOMMERCE-SYSTEM-LOG]" />
+	<property name="LOG_MAPPING_ACCESS" value="[NEU-ECOMMERCE-ACCESS-LOG]" />
+	<property name="LOG_MAPPING_CONTROLLER" value="[NEU-ECOMMERCE-CONTROLLER-LOG]" />
+	<property name="LOG_MAPPING_SERVICE" value="[NEU-ECOMMERCE-SERVICE-LOG]" />
+
+	<!-- Console 日志 -->
+	<appender name="CONSOLE_LOG" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- 临界值过滤器 -->
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>${LOG_LEVEL}</level>
+		</filter>
+		<!-- encoder 默认layout : ch.qos.logback.classic.PatternLayout -->
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- System 日志 -->
+	<appender name="SYSTEM_LOG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 过滤器 -->
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator>
+				<expression>
+					return message.contains("${LOG_MAPPING_SYSTEM}");
+				</expression>
+			</evaluator>
+			<OnMatch>ACCEPT</OnMatch>
+			<OnMismatch>DENY</OnMismatch>
+		</filter>
+		<file>${LOG_HOME}/system.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_BACK_HOME}/system-%d{yyyy-MM-dd}-%i.log.zip
+			</fileNamePattern>
+			<maxHistory>${LOG_FILE_MAXHISTORY}</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- DB 日志 -->
+	<!-- <appender name="DB_LOG" class="ch.qos.logback.classic.db.DBAppender">
+		过滤器
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator>
+				<expression>
+					return message.contains("${LOG_MAPPING_ACCESS}");
+				</expression>
+			</evaluator>
+			<OnMatch>ACCEPT</OnMatch>
+			<OnMismatch>DENY</OnMismatch>
+		</filter>
+		<connectionSource
+			class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+			连接池
+			<driverClass>oracle.jdbc.driver.OracleDriver</driverClass>
+			<url>jdbc:oracle:thin:@db00.neusoft.com:1521:orcl</url>
+			<user>dber</user>
+			<password>dber_pw</password>
+		</connectionSource>
+	</appender> -->
+
+	<!-- Controller 日志 -->
+	<appender name="CONTROLLER_LOG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 过滤器 -->
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator>
+				<expression>
+					return message.contains("${LOG_MAPPING_CONTROLLER}");
+				</expression>
+			</evaluator>
+			<OnMatch>ACCEPT</OnMatch>
+			<OnMismatch>DENY</OnMismatch>
+		</filter>
+		<file>${LOG_HOME}/controller.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_BACK_HOME}/controller-%d{yyyy-MM-dd}-%i.log.zip
+			</fileNamePattern>
+			<maxHistory>${LOG_FILE_MAXHISTORY}</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Service 日志 -->
+	<appender name="SERVICE_LOG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 过滤器 -->
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator>
+				<expression>
+					return message.contains("${LOG_MAPPING_SERVICE}");
+				</expression>
+			</evaluator>
+			<OnMatch>ACCEPT</OnMatch>
+			<OnMismatch>DENY</OnMismatch>
+		</filter>
+		<file>${LOG_HOME}/service.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_BACK_HOME}/service-%d{yyyy-MM-dd}-%i.log.zip
+			</fileNamePattern>
+			<maxHistory>${LOG_FILE_MAXHISTORY}</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<root level="${LOG_LEVEL}">
+		<appender-ref ref="CONSOLE_LOG" />
+		<appender-ref ref="SYSTEM_LOG" />
+		<!-- <appender-ref ref="DB_LOG" /> -->
+		<appender-ref ref="CONTROLLER_LOG" />
+		<appender-ref ref="SERVICE_LOG" />
+	</root>
+
+</configuration>
